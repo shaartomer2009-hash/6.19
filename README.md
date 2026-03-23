@@ -2,9 +2,11 @@
 """
  Program: Scapy open port scanner
  Author: Tomer Shaar
- Description: A port scanner that checks if a port is open and connected to a certain ip
+ Description: A port scanner that checks which ports are open on a given IP address
  Date: 23/03/2026
 """
+import logging
+
 from scapy.layers.inet import IP, TCP
 from scapy.sendrecv import sr1, send
 
@@ -36,19 +38,35 @@ def is_port_open(dst_ip, port):
 def main():
     dst_ip = input("Enter destination IP: ").strip()
 
+    logger.info(f"Scan started for target {dst_ip}")
     print(f"\nScanning {dst_ip}...")
     print("Open ports:")
 
     found_open = False
 
     for port in range(START_PORT, END_PORT + 1):
-        if is_port_open(dst_ip, port):
-            print(port)
-            found_open = True
+        try:
+            if is_port_open(dst_ip, port):
+                print(port)
+                logger.info(f"Open port found: {port}")
+                found_open = True
+        except Exception as error:
+            logger.error(f"Problem while scanning port {port}: {error}")
 
     if not found_open:
         print("No open ports found in range 20-1024.")
+        logger.info("No open ports were found in the requested range")
+
+    logger.info(f"Scan finished for target {dst_ip}")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        filename="port_scan.log",
+        filemode="w",
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s"
+    )
+    logger = logging.getLogger(__name__)
+
     main()
