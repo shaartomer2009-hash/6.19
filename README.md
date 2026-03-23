@@ -1,4 +1,10 @@
 # 6.19
+"""
+ Program: Scapy open port scanner
+ Author: Tomer Shaar
+ Description: A port scanner that checks if a port is open and connected to a certain ip
+ Date: 23/03/2026
+"""
 from scapy.layers.inet import IP, TCP
 from scapy.sendrecv import sr1, send
 
